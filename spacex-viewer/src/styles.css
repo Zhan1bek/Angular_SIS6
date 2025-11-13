@@ -1,0 +1,149 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: #0b0d17;
+  color: #e5e7eb;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+title {
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin-left: 20px;
+}
+
+a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  color: #f9fafb;
+  letter-spacing: 0.5px;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 32px auto;
+  padding: 0 16px;
+  background: transparent;
+  border-radius: 16px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+body::before,
+body::after,
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+}
+
+body::before {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #ffffff80 50%, transparent 51%),
+    radial-gradient(2px 2px at 130px 80px, #ffffff60 50%, transparent 51%),
+    radial-gradient(2px 2px at 260px 120px, #ffffff80 50%, transparent 51%);
+  background-size: 300px 300px;
+  animation: drift1 140s linear infinite;
+  opacity: 0.8;
+}
+
+body::after {
+  background-image:
+    radial-gradient(1.5px 1.5px at 60px 40px, #ffffff70 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 200px 170px, #ffffff70 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 10px 200px, #ffffff70 50%, transparent 51%);
+  background-size: 220px 220px;
+  animation: drift2 100s linear infinite, twinkle 3.5s ease-in-out infinite alternate;
+  opacity: 0.9;
+}
+
+html::before {
+  background-image:
+    radial-gradient(1px 1px at 40px 60px, #ffffff80 50%, transparent 51%),
+    radial-gradient(1px 1px at 150px 140px, #ffffff80 50%, transparent 51%),
+    radial-gradient(1px 1px at 280px 40px, #ffffff80 50%, transparent 51%);
+  background-size: 180px 180px;
+  animation: drift3 70s linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes drift1 {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-300px, -300px, 0); }
+}
+@keyframes drift2 {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-220px, 240px, 0); }
+}
+@keyframes drift3 {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(180px, -180px, 0); }
+}
+@keyframes twinkle {
+  from { opacity: 0.55; }
+  to { opacity: 0.85; }
+}
+
+body { position: relative; }
+.hdr, router-outlet, main, .wrap { position: relative; z-index: 1; }
+
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.starfield::before,
+.starfield::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  opacity: 0.8;
+}
+
+.starfield::before {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, #ffffffa0 50%, transparent 51%),
+    radial-gradient(2px 2px at 130px 80px, #ffffff80 50%, transparent 51%),
+    radial-gradient(2px 2px at 260px 120px, #ffffffa0 50%, transparent 51%);
+  background-size: 300px 300px;
+  animation: star-drift-a 140s linear infinite;
+}
+
+.starfield::after {
+  background-image:
+    radial-gradient(1px 1px at 60px 40px, #ffffff90 50%, transparent 51%),
+    radial-gradient(1px 1px at 200px 170px, #ffffff90 50%, transparent 51%),
+    radial-gradient(1px 1px at 10px 200px, #ffffff90 50%, transparent 51%);
+  background-size: 180px 180px;
+  animation: star-drift-b 80s linear infinite, star-twinkle 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes star-drift-a {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-300px, -300px, 0); }
+}
+@keyframes star-drift-b {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(220px, -180px, 0); }
+}
+@keyframes star-twinkle {
+  from { opacity: 0.6; }
+  to { opacity: 0.9; }
+}

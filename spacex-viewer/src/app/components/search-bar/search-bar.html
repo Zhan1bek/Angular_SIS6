@@ -1,0 +1,11 @@
+<div class="search-container">
+  <input
+    type="text"
+    class="search-input"
+    [(ngModel)]="model"
+    [placeholder]="placeholder()" />
+
+  @if (query()) {
+    <button class="clear-btn" type="button" (click)="clear()">×</button>
+  }
+</div>

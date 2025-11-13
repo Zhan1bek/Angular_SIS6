@@ -1,0 +1,87 @@
+.wrap {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+
+.hdr {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.chip {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  border: 1px solid;
+  margin-left: 8px;
+}
+
+.chip.ok {
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.chip.fail {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.meta {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.details {
+  line-height: 1.6;
+  margin-top: 16px;
+  color: #d1d5db;
+}
+
+.links {
+  margin-top: 16px;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 16px;
+}
+
+.links a {
+  background-color: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.links a:hover {
+  background-color: #1d4ed8;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.gallery img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
+}
