@@ -6,33 +6,18 @@
     [placeholder]="'Search by launch name...'">
   </app-search-bar>
 
-  <div class="filters">
-    <label>
-      <input type="checkbox" (change)="toggleSuccessOnly($event)" />
-      Show success only
-    </label>
-  </div>
+  @if (loading) {
+    <div>Loading...</div>
+  }
 
-  @if (loading) { <div>Loading...</div> }
-  @if (error)   { <div class="error">{{ error }}</div> }
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
 
   @if (launches$ | async; as launches) {
-    <p class="meta">Total: {{ launches.length }}</p>
-
     <ul class="list">
-      @for (l of launches; track l.id) {
-        <li class="row">
-          <a class="row-link" [routerLink]="['/launch', l.id]">
-            <div class="title">{{ l.name }}</div>
-            <div class="date">{{ l.date_utc | date:'medium' }}</div>
-            <div class="launch-status"
-                 [class.is-ok]="l.success === true"
-                 [class.is-fail]="l.success === false">
-              {{ l.success === true ? 'Success'
-              : (l.success === false ? 'Not Success' : 'Unsuccess') }}
-            </div>
-          </a>
-        </li>
+      @for (launch of launches; track launch.id) {
+        <app-item-card [item]="launch"></app-item-card>
       } @empty {
         <li class="row">No launches found.</li>
       }

@@ -1,0 +1,81 @@
+.item-card {
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95); /* тёмный блок */
+  padding: 14px 18px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease,
+  background 0.15s ease;
+  color: #e5e7eb;
+}
+
+.item-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
+  background: rgba(15, 23, 42, 1);
+}
+
+.item-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.item-title {
+  font-weight: 600;
+  font-size: 1rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.item-meta {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.item-status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(248, 250, 252, 0.06);
+  color: #e5e7eb;
+  white-space: nowrap;
+}
+
+.item-status.ok {
+  background: rgba(16, 185, 129, 0.16);
+  color: #6ee7b7;
+}
+
+.item-status.fail {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+}
+
+
+
+/* На маленьких экранах пусть всё встаёт в колонку */
+@media (max-width: 640px) {
+  .item-link {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item-status {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+}
+

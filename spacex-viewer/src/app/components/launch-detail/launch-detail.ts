@@ -1,8 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
+import { ItemsService } from '../../services/items/items';
 import { SpacexService } from '../../services/spacex';
-import { switchMap, of, forkJoin, catchError } from 'rxjs';
+
+import { catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 
 @Component({
   selector: 'app-launch-detail',
@@ -16,31 +21,63 @@ export class LaunchDetail {
   loading = true;
   error = '';
 
-  constructor(route: ActivatedRoute, api: SpacexService) {
-    route.paramMap.pipe(
-      switchMap(params => {
-        const id = params.get('id')!;
-        return api.getLaunch(id).pipe(
-          catchError(() => of(null))
-        );
-      }),
-      switchMap(launch => {
-        if (!launch) {
+  constructor(
+    private route: ActivatedRoute,
+    private itemsService: ItemsService,
+    private spacex: SpacexService,
+    private location: Location
+  ) {
+    this.load();
+  }
+
+  private load() {
+    this.route.paramMap
+      .pipe(
+        switchMap(params => {
+          const id = params.get('id');
+          if (!id) {
+            this.error = 'Launch not found';
+            this.loading = false;
+            return of(null);
+          }
+
+          this.loading = true;
+          this.error = '';
+
+          return this.itemsService.getItemById(id).pipe(
+            catchError(() => {
+              this.error = 'Failed to load launch';
+              this.loading = false;
+              return of(null);
+            })
+          );
+        }),
+        switchMap((launch: any | null) => {
+          if (!launch) {
+            return of({ launch: null, rocket: null, launchpad: null });
+          }
+
+          const rocket$ = launch.rocket
+            ? this.spacex.getRocket(launch.rocket).pipe(catchError(() => of(null)))
+            : of(null);
+
+          const launchpad$ = launch.launchpad
+            ? this.spacex.getLaunchpad(launch.launchpad).pipe(catchError(() => of(null)))
+            : of(null);
+
+          return forkJoin({
+            launch: of(launch),
+            rocket: rocket$,
+            launchpad: launchpad$
+          });
+        }),
+        catchError(() => {
+          this.error = 'Failed to load launch';
+          this.loading = false;
           return of({ launch: null, rocket: null, launchpad: null });
-        }
-
-        const rocket$ = launch.rocket
-          ? api.getRocket(launch.rocket).pipe(catchError(() => of(null)))
-          : of(null);
-
-        const pad$ = launch.launchpad
-          ? api.getLaunchpad(launch.launchpad).pipe(catchError(() => of(null)))
-          : of(null);
-
-        return forkJoin({ launch: of(launch), rocket: rocket$, launchpad: pad$ });
-      })
-    ).subscribe({
-      next: ({ launch, rocket, launchpad }) => {
+        })
+      )
+      .subscribe(({ launch, rocket, launchpad }) => {
         if (!launch) {
           this.error = 'Launch not found';
           this.loading = false;
@@ -53,20 +90,22 @@ export class LaunchDetail {
           date: launch.date_utc,
           success: launch.success,
           details: launch.details,
-          patch: launch.links?.patch?.small,
+          patch: launch.links?.patch?.large || launch.links?.patch?.small,
           article: launch.links?.article,
           webcast: launch.links?.webcast,
           images: launch.links?.flickr?.original ?? [],
           rocketName: rocket?.name ?? null,
-          launchpadName: launchpad ? `${launchpad.name} (${launchpad.locality})` : null
+          launchpadName: launchpad
+            ? `${launchpad.name} (${launchpad.locality})`
+            : null
         };
+
         this.loading = false;
         this.error = '';
-      },
-      error: () => {
-        this.error = 'Failed to load launch';
-        this.loading = false;
-      }
-    });
+      });
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

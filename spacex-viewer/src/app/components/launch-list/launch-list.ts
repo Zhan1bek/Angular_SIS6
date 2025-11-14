@@ -1,77 +1,70 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Launch } from '../../models/launch';
-import { SpacexService } from '../../services/spacex';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import { Observable, of } from 'rxjs';
 import {
-  Observable, Subject, BehaviorSubject, combineLatest, of, switchMap, tap,
-} from 'rxjs';
-import {
-  debounceTime, distinctUntilChanged, startWith,
-  map, catchError, shareReplay
+  catchError,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap
 } from 'rxjs/operators';
+
+import { Item, ItemsService } from '../../services/items/items';
 import { SearchBar } from '../search-bar/search-bar';
+import { ItemCardComponent } from '../item-card/item-card';
 
 @Component({
   selector: 'app-launch-list',
   standalone: true,
-  imports: [CommonModule, SearchBar, RouterLink],
+  imports: [CommonModule, SearchBar, ItemCardComponent],
   templateUrl: './launch-list.html',
   styleUrl: './launch-list.css'
 })
-export class LaunchList implements OnDestroy {
-  private query$ = new Subject<string>();
-  private successOnly$ = new BehaviorSubject<boolean>(false);
-
-  launches$!: Observable<Launch[]>;
-
+export class LaunchList {
+  launches$!: Observable<Item[]>;
   loading = true;
   error = '';
 
-  constructor(private api: SpacexService) {
-    const search$ = this.query$.pipe(
-      startWith(''),
-      map(s => s.trim()),
-      debounceTime(300),
+  constructor(
+    private itemsService: ItemsService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    const query$ = this.route.queryParamMap.pipe(
+      map(params => (params.get('q') ?? '').trim()),
       distinctUntilChanged()
     );
 
-    const success$ = this.successOnly$.pipe(
-      startWith(false),
-      distinctUntilChanged()
-    )
-
-
-    this.launches$ = combineLatest([search$, success$]).pipe(
-      tap(() => { this.loading = true; this.error = ''; }),
-      switchMap(([term, successOnly]) =>
-        (term || successOnly
-            ? this.api.searchLaunches(term, successOnly, 120)
-            : this.api.getLaunches(120)
-        ).pipe(
+    this.launches$ = query$.pipe(
+      startWith(''),
+      tap(() => {
+        this.loading = true;
+        this.error = '';
+      }),
+      switchMap(term =>
+        this.itemsService.getItems(term).pipe(
           catchError(() => {
-            this.error = 'Failed to load launch';
-            return of<Launch[]>([]);
+            this.error = 'Failed to load items';
+            return of([] as Item[]);
           })
         )
       ),
-      tap(() => { this.loading = false; })
+      tap(() => {
+        this.loading = false;
+      }),
+      shareReplay(1)
     );
-
-    this.launches$.subscribe({ next: () => (this.loading = false) });
   }
 
   onQuery(value: string) {
-    this.query$.next(value);
-  }
-
-  toggleSuccessOnly(event: Event) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.successOnly$.next(checked);
-  }
-
-  ngOnDestroy() {
-    this.query$.complete();
-    this.successOnly$.complete();
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { q: value || null },
+      queryParamsHandling: 'merge'
+    });
   }
 }

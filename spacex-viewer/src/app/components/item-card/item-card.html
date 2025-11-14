@@ -1,0 +1,25 @@
+<li class="item-card">
+  <a class="item-link" [routerLink]="['/items', item.id]">
+    <div class="item-main">
+      <div class="item-title">
+        {{ item.name }}
+      </div>
+
+      <div class="item-meta">
+        {{ item.date_utc | date: 'medium' }}
+      </div>
+    </div>
+
+    <span
+      class="item-status"
+      [class.ok]="item.success === true"
+      [class.fail]="item.success === false"
+    >
+      {{
+        item.success === true
+          ? 'Success'
+          : (item.success === false ? 'Failure' : 'Unsuccess')
+      }}
+    </span>
+  </a>
+</li>

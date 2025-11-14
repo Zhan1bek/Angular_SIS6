@@ -1,42 +1,79 @@
 <section class="wrap">
-  @if (loading) { <div>Loading...</div> }
-  @if (error)   { <div class="error">{{ error }}</div> }
+  @if (loading) {
+    <div>Loading...</div>
+  }
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
 
   @if (vm) {
+    <button class="btn-back" type="button" (click)="goBack()">
+      ← Back
+    </button>
+
     <header class="hdr">
       <div class="left">
         <h2 class="title">
           {{ vm.name }}
-          <span class="chip"
-                [class.ok]="vm.success === true"
-                [class.fail]="vm.success === false">
-            {{ vm.success === true ? 'Success' : (vm.success === false ? 'Failure' : 'Unsuccess') }}
+          <span
+            class="chip"
+            [class.ok]="vm.success === true"
+            [class.fail]="vm.success === false">
+            {{ vm.success === true
+            ? 'Success'
+            : (vm.success === false ? 'Failure' : 'Unsuccess') }}
           </span>
         </h2>
-        <div class="meta">{{ vm.date | date:'full' }}</div>
-        @if (vm.rocketName)    { <div class="meta">Rocket: {{ vm.rocketName }}</div> }
-        @if (vm.launchpadName) { <div class="meta">Launchpad: {{ vm.launchpadName }}</div> }
+        <div class="meta">{{ vm.date | date: 'full' }}</div>
+
+        <div class="meta" *ngIf="vm.rocketName">
+          Rocket: {{ vm.rocketName }}
+        </div>
+        <div class="meta" *ngIf="vm.launchpadName">
+          Launchpad: {{ vm.launchpadName }}
+        </div>
       </div>
 
       @if (vm.patch) {
-        <img class="patch" [src]="vm.patch" alt="mission patch" />
+        <div class="patch">
+          <img [src]="vm.patch" alt="mission patch" />
+        </div>
       }
     </header>
 
     @if (vm.details) {
-      <p class="details">{{ vm.details }}</p>
+      <section class="details">
+        <h3>Details</h3>
+        <p>{{ vm.details }}</p>
+      </section>
     }
 
-    <ul class="links">
-      @if (vm.article) { <li><a [href]="vm.article" target="_blank" rel="noopener">Article</a></li> }
-      @if (vm.webcast) { <li><a [href]="vm.webcast" target="_blank" rel="noopener">Webcast</a></li> }
-    </ul>
+    <section class="links">
+      <h3>Links</h3>
+      <ul>
+        @if (vm.article) {
+          <li>
+            <a [href]="vm.article" target="_blank" rel="noopener">
+              Article
+            </a>
+          </li>
+        }
+        @if (vm.webcast) {
+          <li>
+            <a [href]="vm.webcast" target="_blank" rel="noopener">
+              Webcast
+            </a>
+          </li>
+        }
+      </ul>
+    </section>
 
     @if (vm.images?.length) {
       <div class="gallery">
         @for (img of vm.images; track img) {
           <a [href]="img" target="_blank" rel="noopener">
-            <img [src]="img" alt="photo"/>
+            <img [src]="img" alt="photo" />
           </a>
         }
       </div>
