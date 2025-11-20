@@ -1,10 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  // ВАЖНО: подключены CommonModule и ReactiveFormsModule
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.html',
-  styleUrl: './login.css'
+  styleUrl: './login.css',
 })
-export class LoginComponent {}
+export class LoginComponent {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  loading = false;
+  error: string | null = null;
+
+  form = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+  });
+
+  async onSubmit() {
+    if (this.form.invalid) return;
+
+    this.loading = true;
+    this.error = null;
+
+    const { email, password } = this.form.value;
+
+    try {
+      await this.auth.login(email!, password!);
+      this.router.navigate(['/profile']); // маршрут добавим
+    } catch (err: any) {
+      this.error = err.message || 'Login failed';
+    } finally {
+      this.loading = false;
+    }
+  }
+}
