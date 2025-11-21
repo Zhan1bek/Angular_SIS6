@@ -41,7 +41,6 @@ export class SignupComponent {
 
     try {
       await this.auth.signup(email!, password!);
-      // после успешной регистрации → на профиль
       this.router.navigate(['/profile']);
     } catch (err: any) {
       this.error = err.message || 'Signup failed';

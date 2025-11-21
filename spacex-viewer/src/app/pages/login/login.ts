@@ -12,7 +12,6 @@ import { AuthService } from '../../services/auth';
 @Component({
   selector: 'app-login',
   standalone: true,
-  // ВАЖНО: подключены CommonModule и ReactiveFormsModule
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
@@ -42,7 +41,7 @@ export class LoginComponent {
 
     try {
       await this.auth.login(email!, password!);
-      this.router.navigate(['/profile']); // маршрут добавим
+      this.router.navigate(['/profile']);
     } catch (err: any) {
       this.error = err.message || 'Login failed';
     } finally {

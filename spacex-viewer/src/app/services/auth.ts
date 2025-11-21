@@ -17,7 +17,6 @@ export class AuthService {
   currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
   constructor() {
-    // слушаем изменения авторизации
     onAuthStateChanged(auth, (user) => {
       this.currentUserSubject.next(user);
     });
