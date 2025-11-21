@@ -1,23 +1,30 @@
-<section class="login">
-  <h2>Login</h2>
+<section class="auth-page">
+  <div class="auth-card">
+    <h2>Login</h2>
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <label class="field">
-      Email
-      <input type="email" formControlName="email" />
-    </label>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" />
+      </label>
 
-    <label class="field">
-      Password
-      <input type="password" formControlName="password" />
-    </label>
+      <label class="field">
+        <span>Password</span>
+        <input type="password" formControlName="password" />
+      </label>
 
-    <button type="submit" [disabled]="loading || form.invalid">
-      {{ loading ? 'Logging in...' : 'Login' }}
-    </button>
-  </form>
+      <button type="submit" [disabled]="loading || form.invalid">
+        {{ loading ? 'Logging in…' : 'Login' }}
+      </button>
+    </form>
 
-  <p *ngIf="error" class="error">
-    {{ error }}
-  </p>
+    <p *ngIf="error" class="error">
+      {{ error }}
+    </p>
+
+    <p class="switch-link">
+      Don’t have an account?
+      <a routerLink="/signup">Sign up</a>
+    </p>
+  </div>
 </section>
