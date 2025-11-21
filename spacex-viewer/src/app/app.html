@@ -1,33 +1,28 @@
-<div class="starfield" aria-hidden="true"></div>
+<header class="header">
+  <nav class="navbar">
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >Home</a
+    >
+    <a routerLink="/about" routerLinkActive="active">About</a>
+    <a routerLink="/items" routerLinkActive="active">Launches</a>
 
-<header class="hdr">
-  <div class="hdr-inner">
-    <h1 class="logo">{{ title() }}</h1>
+    <span class="spacer"></span>
 
-    <nav class="nav">
-      <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        Home
-      </a>
+    <ng-container *ngIf="user$ | async as user; else loggedOut">
+      <a routerLink="/profile" routerLinkActive="active">Profile</a>
+      <button (click)="onLogout()">Logout</button>
+    </ng-container>
 
-      <a routerLink="/items" routerLinkActive="active">
-        Items
-      </a>
-
-      <a routerLink="/about" routerLinkActive="active">
-        About
-      </a>
-
-      <a routerLink="/login" routerLinkActive="active">
-        Login
-      </a>
-    </nav>
-  </div>
+    <ng-template #loggedOut>
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/signup" routerLinkActive="active">Sign up</a>
+    </ng-template>
+  </nav>
 </header>
 
-<main class="page">
+<main>
   <router-outlet></router-outlet>
 </main>

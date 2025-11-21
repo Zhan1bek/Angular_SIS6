@@ -1,13 +1,27 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { AuthService } from './services/auth';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('Spacex Viewer');
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  user$ = this.auth.currentUser$;
+
+  title() {
+    return 'Spacex Viewer';
+  }
+
+  async onLogout() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
+  }
 }

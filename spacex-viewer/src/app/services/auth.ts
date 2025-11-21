@@ -1,43 +1,51 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {
-  Auth,
-  authState,
+  User,
+  onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  User,
-} from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+} from 'firebase/auth';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { auth } from '../../firebase';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private auth: Auth = inject(Auth);
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
+  currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
 
-  // текущий пользователь (null, если не залогинен)
-  currentUser$: Observable<User | null> = authState(this.auth);
+  constructor() {
+    // слушаем изменения авторизации
+    onAuthStateChanged(auth, (user) => {
+      this.currentUserSubject.next(user);
+    });
+  }
 
   async signup(email: string, password: string): Promise<void> {
     try {
-      await createUserWithEmailAndPassword(this.auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
+      console.error('Firebase signup error:', error);
       throw new Error(this.mapFirebaseError(error));
     }
   }
 
   async login(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error: any) {
+      console.error('Firebase login error:', error);
       throw new Error(this.mapFirebaseError(error));
     }
   }
 
   async logout(): Promise<void> {
     try {
-      await signOut(this.auth);
-    } catch {
+      await signOut(auth);
+    } catch (error: any) {
+      console.error('Firebase logout error:', error);
       throw new Error('Failed to logout. Try again.');
     }
   }
@@ -56,7 +64,7 @@ export class AuthService {
       case 'auth/wrong-password':
         return 'Неверный email или пароль.';
       default:
-        return 'Произошла ошибка. Попробуйте ещё раз.';
+        return `Произошла ошибка (${code || 'unknown'}). Попробуйте ещё раз.`;
     }
   }
 }

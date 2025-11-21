@@ -1,1 +1,12 @@
-<p>profile works!</p>
+<section class="profile" *ngIf="user$ | async as user; else noUser">
+  <h2>Profile</h2>
+
+  <p><strong>UID:</strong> {{ user.uid }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+
+  <button (click)="onLogout()">Logout</button>
+</section>
+
+<ng-template #noUser>
+  <p>No user logged in.</p>
+</ng-template>
