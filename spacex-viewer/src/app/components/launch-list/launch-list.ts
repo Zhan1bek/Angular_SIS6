@@ -19,7 +19,7 @@ import { SearchBar } from '../search-bar/search-bar';
   templateUrl: './launch-list.html',
   styleUrls: ['./launch-list.css'],
 })
-export class LaunchList implements OnInit {    // <= ВАЖНО: именно LaunchList
+export class LaunchList implements OnInit {
   items$!: Observable<Item[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;

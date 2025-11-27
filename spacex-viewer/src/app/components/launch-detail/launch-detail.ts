@@ -46,10 +46,8 @@ export class LaunchDetail {
           this.loading = true;
           this.error = '';
 
-          // ⚡ Вместо itemsService.getItemById — грузим через NgRx
           this.store.dispatch(ItemsActions.loadItem({ id }));
 
-          // ждём, пока в сторе появится нужный запуск
           return this.store.select(ItemsSelectors.selectSelectedItem).pipe(
             filter((launch: any | null) => !!launch && String(launch.id) === id),
             take(1),
