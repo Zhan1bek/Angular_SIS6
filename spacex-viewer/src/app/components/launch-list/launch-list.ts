@@ -1,70 +1,59 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
 
-import { Observable, of } from 'rxjs';
-import {
-  catchError,
-  distinctUntilChanged,
-  map,
-  shareReplay,
-  startWith,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { Item } from '../../services/items/items';
+import * as ItemsActions from '../../items/state/items.actions';
+import * as ItemsSelectors from '../../items/state/items.selectors';
 
-import { Item, ItemsService } from '../../services/items/items';
-import { SearchBar } from '../search-bar/search-bar';
 import { ItemCardComponent } from '../item-card/item-card';
+import { SearchBar } from '../search-bar/search-bar';
 
 @Component({
   selector: 'app-launch-list',
   standalone: true,
-  imports: [CommonModule, SearchBar, ItemCardComponent],
+  imports: [CommonModule, RouterLink, ItemCardComponent, SearchBar],
   templateUrl: './launch-list.html',
-  styleUrl: './launch-list.css'
+  styleUrls: ['./launch-list.css'],
 })
-export class LaunchList {
-  launches$!: Observable<Item[]>;
-  loading = true;
-  error = '';
+export class LaunchList implements OnInit {    // <= ВАЖНО: именно LaunchList
+  items$!: Observable<Item[]>;
+  loading$!: Observable<boolean>;
+  error$!: Observable<string | null>;
 
   constructor(
-    private itemsService: ItemsService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {
-    const query$ = this.route.queryParamMap.pipe(
-      map(params => (params.get('q') ?? '').trim()),
-      distinctUntilChanged()
-    );
+    this.items$ = this.store.select(ItemsSelectors.selectItems);
+    this.loading$ = this.store.select(ItemsSelectors.selectItemsLoading);
+    this.error$ = this.store.select(ItemsSelectors.selectItemsError);
+  }
 
-    this.launches$ = query$.pipe(
-      startWith(''),
-      tap(() => {
-        this.loading = true;
-        this.error = '';
-      }),
-      switchMap(term =>
-        this.itemsService.getItems(term).pipe(
-          catchError(() => {
-            this.error = 'Failed to load items';
-            return of([] as Item[]);
-          })
-        )
-      ),
-      tap(() => {
-        this.loading = false;
-      }),
-      shareReplay(1)
-    );
+  ngOnInit(): void {
+    this.route.queryParamMap
+      .pipe(
+        map((params) => params.get('q') || ''),
+        distinctUntilChanged()
+      )
+      .subscribe((query) => {
+        this.store.dispatch(ItemsActions.loadItems({ query }));
+      });
   }
 
   onQuery(value: string) {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { q: value || null },
-      queryParamsHandling: 'merge'
+      queryParamsHandling: 'merge',
     });
+  }
+
+  trackById(index: number, item: Item): string {
+    return item.id;
   }
 }

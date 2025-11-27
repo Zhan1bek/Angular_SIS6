@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { ItemsService } from '../../services/items/items';
 import { SpacexService } from '../../services/spacex';
+import { Store } from '@ngrx/store';
+import * as ItemsActions from '../../items/state/items.actions';
+import * as ItemsSelectors from '../../items/state/items.selectors';
 
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { forkJoin, of } from 'rxjs';
 
 @Component({
@@ -14,7 +16,7 @@ import { forkJoin, of } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './launch-detail.html',
-  styleUrl: './launch-detail.css'
+  styleUrls: ['./launch-detail.css'],
 })
 export class LaunchDetail {
   vm: any = null;
@@ -23,9 +25,9 @@ export class LaunchDetail {
 
   constructor(
     private route: ActivatedRoute,
-    private itemsService: ItemsService,
     private spacex: SpacexService,
-    private location: Location
+    private location: Location,
+    private store: Store
   ) {
     this.load();
   }
@@ -33,7 +35,7 @@ export class LaunchDetail {
   private load() {
     this.route.paramMap
       .pipe(
-        switchMap(params => {
+        switchMap((params) => {
           const id = params.get('id');
           if (!id) {
             this.error = 'Launch not found';
@@ -44,7 +46,13 @@ export class LaunchDetail {
           this.loading = true;
           this.error = '';
 
-          return this.itemsService.getItemById(id).pipe(
+          // ⚡ Вместо itemsService.getItemById — грузим через NgRx
+          this.store.dispatch(ItemsActions.loadItem({ id }));
+
+          // ждём, пока в сторе появится нужный запуск
+          return this.store.select(ItemsSelectors.selectSelectedItem).pipe(
+            filter((launch: any | null) => !!launch && String(launch.id) === id),
+            take(1),
             catchError(() => {
               this.error = 'Failed to load launch';
               this.loading = false;
@@ -58,17 +66,21 @@ export class LaunchDetail {
           }
 
           const rocket$ = launch.rocket
-            ? this.spacex.getRocket(launch.rocket).pipe(catchError(() => of(null)))
+            ? this.spacex
+              .getRocket(launch.rocket)
+              .pipe(catchError(() => of(null)))
             : of(null);
 
           const launchpad$ = launch.launchpad
-            ? this.spacex.getLaunchpad(launch.launchpad).pipe(catchError(() => of(null)))
+            ? this.spacex
+              .getLaunchpad(launch.launchpad)
+              .pipe(catchError(() => of(null)))
             : of(null);
 
           return forkJoin({
             launch: of(launch),
             rocket: rocket$,
-            launchpad: launchpad$
+            launchpad: launchpad$,
           });
         }),
         catchError(() => {
@@ -97,7 +109,7 @@ export class LaunchDetail {
           rocketName: rocket?.name ?? null,
           launchpadName: launchpad
             ? `${launchpad.name} (${launchpad.locality})`
-            : null
+            : null,
         };
 
         this.loading = false;

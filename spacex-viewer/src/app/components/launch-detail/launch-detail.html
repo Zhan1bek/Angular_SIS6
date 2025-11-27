@@ -14,22 +14,31 @@
 
     <header class="hdr">
       <div class="left">
-        <h2 class="title">
-          {{ vm.name }}
-          <span
-            class="chip"
-            [class.ok]="vm.success === true"
-            [class.fail]="vm.success === false">
-            {{ vm.success === true
-            ? 'Success'
-            : (vm.success === false ? 'Failure' : 'Unsuccess') }}
+        <h1 class="title">{{ vm.name }}</h1>
+
+        <div class="meta">
+          <span class="date">
+            {{ vm.date | date : 'medium' }}
           </span>
-        </h2>
-        <div class="meta">{{ vm.date | date: 'full' }}</div>
+
+          <span
+            class="launch-status"
+            [class.is-ok]="vm.success === true"
+          >
+            @if (vm.success === true) {
+              Success
+            } @else if (vm.success === false) {
+              Failure
+            } @else {
+              Unknown
+            }
+          </span>
+        </div>
 
         <div class="meta" *ngIf="vm.rocketName">
           Rocket: {{ vm.rocketName }}
         </div>
+
         <div class="meta" *ngIf="vm.launchpadName">
           Launchpad: {{ vm.launchpadName }}
         </div>
@@ -49,24 +58,28 @@
       </section>
     }
 
-    <section class="links">
+    <section class="links" *ngIf="vm.article || vm.webcast">
       <h3>Links</h3>
-      <ul>
-        @if (vm.article) {
-          <li>
-            <a [href]="vm.article" target="_blank" rel="noopener">
-              Article
-            </a>
-          </li>
-        }
-        @if (vm.webcast) {
-          <li>
-            <a [href]="vm.webcast" target="_blank" rel="noopener">
-              Webcast
-            </a>
-          </li>
-        }
-      </ul>
+      <div class="link-buttons">
+        <a
+          *ngIf="vm.article"
+          [href]="vm.article"
+          target="_blank"
+          rel="noopener"
+          class="btn-link"
+        >
+          Article
+        </a>
+        <a
+          *ngIf="vm.webcast"
+          [href]="vm.webcast"
+          target="_blank"
+          rel="noopener"
+          class="btn-link"
+        >
+          Webcast
+        </a>
+      </div>
     </section>
 
     @if (vm.images?.length) {

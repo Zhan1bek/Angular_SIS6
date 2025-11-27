@@ -2,19 +2,20 @@
   <h2>Latest Launches</h2>
 
   <app-search-bar
-    (queryChange)="onQuery($event)"
-    [placeholder]="'Search by launch name...'">
+    (queryChange)="onQuery($any($event))"
+    [placeholder]="'Search by launch name...'"
+  >
   </app-search-bar>
 
-  @if (loading) {
+  @if (loading$ | async) {
     <div>Loading...</div>
   }
 
-  @if (error) {
-    <div class="error">{{ error }}</div>
+  @if (error$ | async; as err) {
+    <div class="error">{{ err }}</div>
   }
 
-  @if (launches$ | async; as launches) {
+  @if (items$ | async; as launches) {
     <ul class="list">
       @for (launch of launches; track launch.id) {
         <app-item-card [item]="launch"></app-item-card>

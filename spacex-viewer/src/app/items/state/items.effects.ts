@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+// src/app/items/state/items.effects.ts
+import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -8,11 +9,11 @@ import { ItemsService } from '../../services/items/items';
 
 @Injectable()
 export class ItemsEffects {
-  constructor(
-    private actions$: Actions,
-    private itemsService: ItemsService
-  ) {}
+  // безопасный способ для Angular 20+: получаем зависимости через inject()
+  private actions$ = inject(Actions);
+  private itemsService = inject(ItemsService);
 
+  // Загрузка списка
   loadItems$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ItemsActions.loadItems),
@@ -31,6 +32,7 @@ export class ItemsEffects {
     )
   );
 
+  // Загрузка деталей
   loadItem$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ItemsActions.loadItem),
