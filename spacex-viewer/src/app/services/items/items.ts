@@ -13,7 +13,7 @@ export class ItemsService {
 
   constructor(private spacex: SpacexService) {}
 
-  getItems(query?: string, page: number = 1): Observable<Item[]> {
+  getItems(query?: string): Observable<Item[]> {
     const term = query?.trim() ?? '';
     const limit = 120;
 
