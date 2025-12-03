@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map, distinctUntilChanged } from 'rxjs/operators';
-
 import { Item } from '../../services/items/items';
+
 import * as ItemsActions from '../../items/state/items.actions';
 import * as ItemsSelectors from '../../items/state/items.selectors';
-
 import { ItemCardComponent } from '../item-card/item-card';
+
 import { SearchBar } from '../search-bar/search-bar';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-launch-list',

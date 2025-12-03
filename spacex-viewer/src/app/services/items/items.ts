@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {Observable, throwError} from 'rxjs';
 
 import { SpacexService } from '../spacex';
 import { Launch } from '../../models/launch';
@@ -16,6 +16,10 @@ export class ItemsService {
   getItems(query?: string): Observable<Item[]> {
     const term = query?.trim() ?? '';
     const limit = 120;
+
+    if (!navigator.onLine) {
+      return throwError(() => new Error("You are offline. Cached data is not available yet."));
+    }
 
     if (term.length > 0) {
       return this.spacex.searchLaunches(term, false, limit);
