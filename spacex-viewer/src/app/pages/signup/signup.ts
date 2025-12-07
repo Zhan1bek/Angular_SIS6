@@ -11,11 +11,14 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
+// ---------------------------
+// Password Complexity Validator
+// ---------------------------
 function passwordComplexityValidator(
   control: AbstractControl
 ): ValidationErrors | null {
   const value = control.value as string;
-  if (!value) return null; // required отработает отдельно
+  if (!value) return null;
 
   const hasMinLength = value.length >= 8;
   const hasNumber = /[0-9]/.test(value);
@@ -27,6 +30,9 @@ function passwordComplexityValidator(
   return null;
 }
 
+// ---------------------------
+// Password Match Validator
+// ---------------------------
 function passwordsMatchValidator(
   group: AbstractControl
 ): ValidationErrors | null {
@@ -58,10 +64,12 @@ export class SignupComponent {
         Validators.required,
         Validators.email,
       ]),
+
       password: new FormControl('', [
         Validators.required,
-        passwordComplexityValidator, // + сложность
+        passwordComplexityValidator,
       ]),
+
       repeatPassword: new FormControl('', [
         Validators.required,
       ]),
@@ -71,18 +79,24 @@ export class SignupComponent {
     }
   );
 
-  get email() {
+  // ---------------------------
+  // GETTERS FOR TEMPLATE
+  // ---------------------------
+  get emailControl() {
     return this.form.get('email');
   }
 
-  get password() {
+  get passwordControl() {
     return this.form.get('password');
   }
 
-  get repeatPassword() {
+  get repeatPasswordControl() {
     return this.form.get('repeatPassword');
   }
 
+  // ---------------------------
+  // SUBMIT
+  // ---------------------------
   async onSubmit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

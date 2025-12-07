@@ -1,30 +1,81 @@
-<section class="auth-page">
+<div class="auth-page">
   <div class="auth-card">
-    <h2>Sign up</h2>
+    <h2>Create account</h2>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label class="field">
+
+      <div class="field">
         <span>Email</span>
-        <input type="email" formControlName="email" />
-      </label>
+        <input
+          type="email"
+          placeholder="you@example.com"
+          formControlName="email"
+        />
 
-      <label class="field">
+        <div class="error" *ngIf="emailControl?.touched && emailControl?.invalid">
+          <div *ngIf="emailControl?.hasError('required')">
+            Email is required.
+          </div>
+          <div *ngIf="emailControl?.hasError('email')">
+            Please enter a valid email.
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
         <span>Password</span>
-        <input type="password" formControlName="password" />
-      </label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Minimum 8 characters"
+          formControlName="password"
+        />
 
-      <button type="submit" [disabled]="loading || form.invalid">
-        {{ loading ? 'Signing up…' : 'Sign up' }}
+        <div class="error" *ngIf="passwordControl?.touched && passwordControl?.invalid">
+          <div *ngIf="passwordControl?.hasError('required')">
+            Password is required.
+          </div>
+          <div *ngIf="passwordControl?.hasError('passwordComplexity')">
+            Password must be at least 8 characters long,
+            contain at least one number and one special character.
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <span>Repeat password</span>
+        <input
+          id="repeatPassword"
+          type="password"
+          placeholder="Repeat your password"
+          formControlName="repeatPassword"
+        />
+
+        <div class="error" *ngIf="repeatPasswordControl?.touched && repeatPasswordControl?.hasError('required')">
+          Please repeat your password.
+        </div>
+
+        <div
+          class="error"
+          *ngIf="(passwordControl?.touched || repeatPasswordControl?.touched)
+                 && form.hasError('passwordMismatch')"
+        >
+          Passwords do not match.
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <button type="submit" [disabled]="form.invalid || loading">
+        {{ loading ? 'Creating...' : 'Sign up' }}
       </button>
+
+      <div class="switch-link">
+        Already have an account?
+        <a [routerLink]="['/login']">Log in</a>
+      </div>
     </form>
-
-    <p *ngIf="error" class="error">
-      {{ error }}
-    </p>
-
-    <p class="switch-link">
-      Already have an account?
-      <a routerLink="/login">Login</a>
-    </p>
   </div>
-</section>
+</div>
