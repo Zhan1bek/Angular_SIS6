@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import {
   User,
   onAuthStateChanged,
@@ -6,64 +7,75 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { auth } from '../../firebase';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
+} from 'firebase/firestore';
+
+import { auth, db } from '../../firebase';
+
+export interface AppUser {
+  uid: string;
+  email: string | null;
+  displayName?: string | null;
+  photoData?: string | null;
+  favorites?: string[];
+  createdAt?: any;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  currentUser$: Observable<User | null> = this.currentUserSubject.asObservable();
+  private userSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.userSubject.asObservable();
 
   constructor() {
-    onAuthStateChanged(auth, (user) => {
-      this.currentUserSubject.next(user);
+    onAuthStateChanged(auth, async (user) => {
+      this.userSubject.next(user);
+      if (user) {
+        await this.ensureUserDoc(user).catch(() => {});
+      }
     });
   }
 
   async signup(email: string, password: string): Promise<void> {
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      console.error('Firebase signup error:', error);
-      throw new Error(this.mapFirebaseError(error));
-    }
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await this.ensureUserDoc(cred.user);
   }
 
   async login(email: string, password: string): Promise<void> {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-    } catch (error: any) {
-      console.error('Firebase login error:', error);
-      throw new Error(this.mapFirebaseError(error));
-    }
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    await this.ensureUserDoc(cred.user);
   }
 
   async logout(): Promise<void> {
-    try {
-      await signOut(auth);
-    } catch (error: any) {
-      console.error('Firebase logout error:', error);
-      throw new Error('Failed to logout. Try again.');
-    }
+    await signOut(auth);
   }
 
-  private mapFirebaseError(error: any): string {
-    const code = error?.code;
 
-    switch (code) {
-      case 'auth/email-already-in-use':
-        return 'Этот email уже используется.';
-      case 'auth/invalid-email':
-        return 'Неверный формат email.';
-      case 'auth/weak-password':
-        return 'Слишком простой пароль (минимум 6 символов).';
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-        return 'Неверный email или пароль.';
-      default:
-        return `Произошла ошибка (${code || 'unknown'}). Попробуйте ещё раз.`;
+  get currentUser(): User | null {
+    return this.userSubject.value;
+  }
+
+
+  private async ensureUserDoc(user: User): Promise<void> {
+    const ref = doc(db, 'users', user.uid);
+    const snap = await getDoc(ref);
+
+    if (!snap.exists()) {
+      const appUser: AppUser = {
+        uid: user.uid,
+        email: user.email ?? null,
+        displayName: user.displayName ?? null,
+        photoData: null,
+        favorites: [],
+        createdAt: serverTimestamp(),
+      };
+
+      await setDoc(ref, appUser);
     }
   }
 }
