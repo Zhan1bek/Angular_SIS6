@@ -10,16 +10,28 @@
       </div>
     </div>
 
-    <span
-      class="item-status"
-      [class.ok]="item.success === true"
-      [class.fail]="item.success === false"
-    >
-      {{
-        item.success === true
-          ? 'Success'
-          : (item.success === false ? 'Failure' : 'Unsuccess')
-      }}
-    </span>
+    <div class="item-right">
+      <button
+        type="button"
+        class="fav-btn"
+        (click)="onToggleFavorite($event)"
+        [class.active]="favorites.isFavorite(item.id)"
+        aria-label="Toggle favorite"
+      >
+        {{ favorites.isFavorite(item.id) ? '★' : '☆' }}
+      </button>
+
+      <span
+        class="item-status"
+        [class.ok]="item.success === true"
+        [class.fail]="item.success === false"
+      >
+        {{
+          item.success === true
+            ? 'Success'
+            : (item.success === false ? 'Failure' : 'Unsuccess')
+        }}
+      </span>
+    </div>
   </a>
 </li>

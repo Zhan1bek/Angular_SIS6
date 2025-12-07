@@ -10,6 +10,7 @@ import { authGuard } from './guards/auth.guard';
 
 import { LaunchList } from './components/launch-list/launch-list';
 import { LaunchDetail } from './components/launch-detail/launch-detail';
+import {FavoritesPage} from './pages/favorites/favorites';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'items/:id', component: LaunchDetail },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
+  { path: 'favorites', component: FavoritesPage },
   {
     path: 'profile',
     component: ProfileComponent,

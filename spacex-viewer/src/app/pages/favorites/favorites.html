@@ -1,0 +1,29 @@
+<section class="favorites-page">
+  <div class="favorites-header">
+    <h2>Your favorites</h2>
+    <p class="subtitle">
+      Saved SpaceX launches. Works for guests (localStorage) and for logged-in users (Firestore).
+    </p>
+  </div>
+
+  <div
+    class="merge-info"
+    *ngIf="mergeInfo$ | async as mergeInfo"
+    (click)="onClearMergeMessage()"
+  >
+    {{ mergeInfo }}
+  </div>
+
+  <ng-container *ngIf="launches$ | async as launches">
+    <p *ngIf="!launches.length" class="empty-text">
+      You don’t have any favorites yet. Add some launches from the list.
+    </p>
+
+    <ul class="items-grid" *ngIf="launches.length">
+      <app-item-card
+        *ngFor="let launch of launches"
+        [item]="launch"
+      ></app-item-card>
+    </ul>
+  </ng-container>
+</section>
