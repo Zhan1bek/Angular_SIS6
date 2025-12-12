@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { map, distinctUntilChanged, debounceTime, takeUntil } from 'rxjs/operators';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Item } from '../../services/items/items';
 
 import * as ItemsActions from '../../items/state/items.actions';
@@ -15,11 +15,11 @@ import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-launch-list',
   standalone: true,
-  imports: [CommonModule, ItemCardComponent, SearchBar],
+  imports: [CommonModule, RouterLink, ItemCardComponent, SearchBar],
   templateUrl: './launch-list.html',
   styleUrls: ['./launch-list.css'],
 })
-export class LaunchList implements OnInit, OnDestroy {
+export class LaunchList implements OnInit {
   items$!: Observable<Item[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
@@ -28,9 +28,6 @@ export class LaunchList implements OnInit, OnDestroy {
   totalPages$!: Observable<number>;
   hasNextPage$!: Observable<boolean>;
   hasPrevPage$!: Observable<boolean>;
-  
-  isOffline = false;
-  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -45,14 +42,6 @@ export class LaunchList implements OnInit, OnDestroy {
     this.totalPages$ = this.store.select(ItemsSelectors.selectTotalPages);
     this.hasNextPage$ = this.store.select(ItemsSelectors.selectHasNextPage);
     this.hasPrevPage$ = this.store.select(ItemsSelectors.selectHasPrevPage);
-    
-    this.isOffline = !navigator.onLine;
-    window.addEventListener('online', () => {
-      this.isOffline = false;
-    });
-    window.addEventListener('offline', () => {
-      this.isOffline = true;
-    });
   }
 
   ngOnInit(): void {
@@ -104,10 +93,5 @@ export class LaunchList implements OnInit, OnDestroy {
 
   trackById(index: number, item: Item): string {
     return item.id;
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

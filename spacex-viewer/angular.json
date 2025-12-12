@@ -84,6 +84,16 @@
             ],
             "styles": [
               "src/styles.css"
+            ],
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "**/workers/**",
+              "**/*.worker.ts",
+              "**/main.ts",
+              "**/app.config.ts",
+              "**/app.routes.ts",
+              "**/firebase.ts",
+              "**/environments/**"
             ]
           }
         }
