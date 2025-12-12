@@ -33,3 +33,33 @@ export const selectSelectedItemError = createSelector(
   selectItemsState,
   (state) => state.selectedItemError
 );
+
+export const selectCurrentPage = createSelector(
+  selectItemsState,
+  (state) => state.currentPage
+);
+
+export const selectPageSize = createSelector(
+  selectItemsState,
+  (state) => state.pageSize
+);
+
+export const selectTotalDocs = createSelector(
+  selectItemsState,
+  (state) => state.totalDocs
+);
+
+export const selectTotalPages = createSelector(
+  selectItemsState,
+  (state) => Math.ceil(state.totalDocs / state.pageSize)
+);
+
+export const selectHasNextPage = createSelector(
+  selectItemsState,
+  (state) => state.currentPage < Math.ceil(state.totalDocs / state.pageSize)
+);
+
+export const selectHasPrevPage = createSelector(
+  selectItemsState,
+  (state) => state.currentPage > 1
+);

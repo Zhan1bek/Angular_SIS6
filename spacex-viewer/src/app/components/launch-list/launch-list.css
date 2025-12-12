@@ -86,3 +86,98 @@
   margin-top: 16px;
 }
 
+.pagination-controls-top {
+  margin: 16px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.pagination-controls-top label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.pagination-controls-top select {
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #f9fafb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f9fafb' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+.pagination-controls-top select:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.pagination-controls-top select:focus {
+  outline: none;
+  border-color: rgba(37, 99, 235, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.pagination-controls-top select option {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 8px;
+}
+
+.pagination-controls-top select option:hover {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+.pagination-controls-top select option:checked {
+  background: rgba(37, 99, 235, 0.3);
+  color: #f9fafb;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 16px 0;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.1);
+  color: #f9fafb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(37, 99, 235, 0.3);
+  transform: translateY(-1px);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  padding: 0 8px;
+}
+

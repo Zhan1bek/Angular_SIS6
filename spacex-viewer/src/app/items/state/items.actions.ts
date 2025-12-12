@@ -3,12 +3,12 @@ import { Item } from '../../services/items/items';
 
 export const loadItems = createAction(
   '[Items] Load Items',
-  props<{ query?: string | null }>()
+  props<{ query?: string | null; page?: number; limit?: number }>()
 );
 
 export const loadItemsSuccess = createAction(
   '[Items] Load Items Success',
-  props<{ items: Item[] }>()
+  props<{ items: Item[]; totalDocs?: number; page?: number; limit?: number }>()
 );
 
 export const loadItemsFailure = createAction(

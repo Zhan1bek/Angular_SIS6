@@ -12,6 +12,11 @@ export interface ItemsState {
   selectedItem: Item | null;
   selectedItemLoading: boolean;
   selectedItemError: string | null;
+
+  // Pagination
+  currentPage: number;
+  pageSize: number;
+  totalDocs: number;
 }
 
 export const initialState: ItemsState = {
@@ -22,6 +27,11 @@ export const initialState: ItemsState = {
   selectedItem: null,
   selectedItemLoading: false,
   selectedItemError: null,
+
+  // Pagination
+  currentPage: 1,
+  pageSize: 10,
+  totalDocs: 0,
 };
 
 export const itemsReducer = createReducer(
@@ -32,11 +42,14 @@ export const itemsReducer = createReducer(
     itemsLoading: true,
     itemsError: null,
   })),
-  on(ItemsActions.loadItemsSuccess, (state, { items }) => ({
+  on(ItemsActions.loadItemsSuccess, (state, { items, totalDocs, page, limit }) => ({
     ...state,
     items,
     itemsLoading: false,
     itemsError: null,
+    totalDocs: totalDocs ?? state.totalDocs,
+    currentPage: page ?? state.currentPage,
+    pageSize: limit ?? state.pageSize,
   })),
   on(ItemsActions.loadItemsFailure, (state, { error }) => ({
     ...state,

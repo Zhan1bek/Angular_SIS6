@@ -7,6 +7,21 @@
   >
   </app-search-bar>
 
+  <div class="pagination-controls-top">
+    <label>
+      Items per page:
+      <select 
+        [value]="(pageSize$ | async) || 10" 
+        (change)="onLimitChange(+$any($event.target).value)"
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+    </label>
+  </div>
+
   @if (loading$ | async) {
     <div>Loading...</div>
   }
@@ -24,4 +39,34 @@
       }
     </ul>
   }
+
+  <div class="pagination-controls">
+    <ng-container *ngIf="currentPage$ | async as currentPage">
+      <ng-container *ngIf="totalPages$ | async as totalPages">
+        <ng-container *ngIf="hasPrevPage$ | async">
+          <button 
+            type="button" 
+            (click)="onPageChange(currentPage - 1)"
+            class="pagination-btn"
+          >
+            ← Previous
+          </button>
+        </ng-container>
+
+        <span class="pagination-info">
+          Page {{ currentPage }} of {{ totalPages }}
+        </span>
+
+        <ng-container *ngIf="hasNextPage$ | async">
+          <button 
+            type="button" 
+            (click)="onPageChange(currentPage + 1)"
+            class="pagination-btn"
+          >
+            Next →
+          </button>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
 </section>

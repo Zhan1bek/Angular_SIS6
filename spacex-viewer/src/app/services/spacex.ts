@@ -11,20 +11,20 @@ export class SpacexService {
 
   constructor(private http: HttpClient) {}
 
-  getLaunches(limit = 30) : Observable<Launch[]> {
+  getLaunches(limit = 30, page = 1) : Observable<{docs: Launch[], totalDocs: number, page: number, limit: number}> {
     const body = {
       query: {},
       options:{
         sort: { date_utc: 'desc' },
-        limit
+        limit,
+        page
       }
     };
 
-    return this.http.post<{docs: Launch[]}>(`${this.base}/launches/query`, body)
-      .pipe(map(res => res.docs))
+    return this.http.post<{docs: Launch[], totalDocs: number, page: number, limit: number}>(`${this.base}/launches/query`, body)
   }
 
-  searchLaunches(term: string, successOnly = false, limit = 30) : Observable<Launch[]> {
+  searchLaunches(term: string, successOnly = false, limit = 30, page = 1) : Observable<{docs: Launch[], totalDocs: number, page: number, limit: number}> {
     const query:any = {};
     if (term && term.trim().length > 0) {
       query.name = {$regex: term.trim(), $options: 'i'}
@@ -38,12 +38,12 @@ export class SpacexService {
       query,
       options:{
         sort: { date_utc: 'desc' },
-        limit
+        limit,
+        page
       }
     }
 
-    return this.http.post<{docs: Launch[]}>(`${this.base}/launches/query`, body)
-      .pipe(map(res => res.docs))
+    return this.http.post<{docs: Launch[], totalDocs: number, page: number, limit: number}>(`${this.base}/launches/query`, body)
   }
 
   getLaunch(id: string): Observable<Launch> {

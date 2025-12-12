@@ -14,9 +14,16 @@ export class ItemsEffects {
   loadItems$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ItemsActions.loadItems),
-      switchMap(({ query }) =>
-        this.itemsService.getItems(query ?? undefined).pipe(
-          map((items) => ItemsActions.loadItemsSuccess({ items })),
+      switchMap(({ query, page = 1, limit = 10 }) =>
+        this.itemsService.getItems(query ?? undefined, page, limit).pipe(
+          map(({ items, totalDocs, page: resPage, limit: resLimit }) => 
+            ItemsActions.loadItemsSuccess({ 
+              items, 
+              totalDocs, 
+              page: resPage, 
+              limit: resLimit 
+            })
+          ),
           catchError((error) =>
             of(
               ItemsActions.loadItemsFailure({

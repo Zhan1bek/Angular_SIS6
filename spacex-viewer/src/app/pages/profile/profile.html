@@ -1,12 +1,57 @@
 <section class="auth-page">
-  <div class="auth-card">
+  <div class="auth-card profile-card">
     <h2>Profile</h2>
 
     <div *ngIf="user$ | async as user; else noUser">
-      <p><strong>UID:</strong> {{ user.uid }}</p>
-      <p><strong>Email:</strong> {{ user.email }}</p>
 
-      <button (click)="onLogout()">Logout</button>
+      <!-- Верхний блок: аватар + основная инфа -->
+      <div class="profile-header" *ngIf="profile$ | async as profile">
+        <div class="avatar-wrapper">
+          <ng-container *ngIf="profile?.photoData; else avatarPlaceholder">
+            <img
+              [src]="profile.photoData"
+              alt="Profile photo"
+              class="avatar-img"
+            />
+          </ng-container>
+
+          <ng-template #avatarPlaceholder>
+            <div class="avatar-placeholder">
+              {{ user.email?.charAt(0) | uppercase }}
+            </div>
+          </ng-template>
+        </div>
+
+        <div class="profile-info">
+          <div class="profile-email">
+            <span class="label">Email:</span> {{ user.email }}
+          </div>
+          <div class="profile-uid">
+            <span class="label">UID:</span> {{ user.uid }}
+          </div>
+        </div>
+      </div>
+
+      <hr class="profile-separator" />
+
+      <!-- Загрузка картинки -->
+      <div class="field">
+        <span>Profile picture (.jpg / .png)</span>
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)"
+          [disabled]="uploading"
+        />
+      </div>
+
+      <div class="error" *ngIf="uploadError">
+        {{ uploadError }}
+      </div>
+
+      <button type="button" (click)="onLogout()" [disabled]="uploading">
+        {{ uploading ? 'Saving...' : 'Logout' }}
+      </button>
     </div>
 
     <ng-template #noUser>

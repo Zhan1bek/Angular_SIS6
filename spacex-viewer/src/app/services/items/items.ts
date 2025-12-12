@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable, throwError} from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { SpacexService } from '../spacex';
 import { Launch } from '../../models/launch';
@@ -13,20 +14,32 @@ export class ItemsService {
 
   constructor(private spacex: SpacexService) {}
 
-  getItems(query?: string): Observable<Item[]> {
+  getItems(query?: string, page: number = 1, limit: number = 10): Observable<{items: Item[], totalDocs: number, page: number, limit: number}> {
     const term = query?.trim() ?? '';
-    const limit = 120;
 
     if (!navigator.onLine) {
       return throwError(() => new Error("You are offline. Cached data is not available yet."));
     }
 
     if (term.length > 0) {
-      return this.spacex.searchLaunches(term, false, limit);
+      return this.spacex.searchLaunches(term, false, limit, page).pipe(
+        map(res => ({
+          items: res.docs,
+          totalDocs: res.totalDocs,
+          page: res.page,
+          limit: res.limit
+        }))
+      );
     }
 
-
-    return this.spacex.getLaunches(limit);
+    return this.spacex.getLaunches(limit, page).pipe(
+      map(res => ({
+        items: res.docs,
+        totalDocs: res.totalDocs,
+        page: res.page,
+        limit: res.limit
+      }))
+    );
   }
 
   getItemById(id: string | number): Observable<Item> {
