@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { FavoritesService } from '../../services/favorites';
 import { SpacexService } from '../../services/spacex';
 import { Launch } from '../../models/launch';
@@ -10,7 +9,7 @@ import { ItemCardComponent } from '../../components/item-card/item-card';
 @Component({
   selector: 'app-favorites',
   standalone: true,
-  imports: [CommonModule, RouterLink, ItemCardComponent],
+  imports: [CommonModule, ItemCardComponent],
   templateUrl: './favorites.html',
   styleUrl: './favorites.css',
 })

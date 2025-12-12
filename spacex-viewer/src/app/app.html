@@ -22,6 +22,14 @@
   </nav>
 </header>
 
+@if (isOffline) {
+  <div class="offline-banner">
+    <span class="offline-icon">📡</span>
+    <span class="offline-text">You are currently offline. Some features may be limited.</span>
+    <a routerLink="/offline" class="offline-link">View Offline Page</a>
+  </div>
+}
+
 <main>
   <router-outlet></router-outlet>
 </main>

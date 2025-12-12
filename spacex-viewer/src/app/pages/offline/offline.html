@@ -1,0 +1,93 @@
+<div class="offline-page">
+  <div class="offline-container">
+    <div class="offline-icon-large">📡</div>
+    
+    <h1 class="offline-title">You're Offline</h1>
+    
+    <p class="offline-description">
+      It looks like you've lost your internet connection. Don't worry, you can still access some features!
+    </p>
+
+    <div class="offline-actions">
+      <button 
+        type="button" 
+        class="btn-retry"
+        (click)="checkConnection()"
+        [disabled]="!isOffline"
+      >
+        <span class="btn-icon">🔄</span>
+        Try Again
+      </button>
+      
+      @if (previousUrl) {
+        <button 
+          type="button" 
+          class="btn-back"
+          (click)="goBack()"
+        >
+          ← Go Back
+        </button>
+      }
+    </div>
+
+    @if (hasCachedData) {
+      <div class="cache-info">
+        <span class="cache-badge">✓</span>
+        <span class="cache-text">{{ cachedItemsCount }} cached item(s) available</span>
+      </div>
+    }
+
+    <div class="cached-pages">
+      <h3 class="cached-title">Available Offline Pages</h3>
+      <div class="pages-grid">
+        <button 
+          type="button"
+          class="page-card"
+          (click)="goToCachedPage('/')"
+        >
+          <span class="page-icon">🏠</span>
+          <span class="page-name">Home</span>
+        </button>
+        
+        <button 
+          type="button"
+          class="page-card"
+          (click)="goToCachedPage('/about')"
+        >
+          <span class="page-icon">ℹ️</span>
+          <span class="page-name">About</span>
+        </button>
+        
+        <button 
+          type="button"
+          class="page-card"
+          (click)="goToCachedPage('/items')"
+        >
+          <span class="page-icon">🚀</span>
+          <span class="page-name">Launches</span>
+          <span class="page-badge">Cached</span>
+        </button>
+        
+        <button 
+          type="button"
+          class="page-card"
+          (click)="goToCachedPage('/favorites')"
+        >
+          <span class="page-icon">⭐</span>
+          <span class="page-name">Favorites</span>
+          <span class="page-badge">Cached</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="offline-tips">
+      <h3 class="tips-title">Tips</h3>
+      <ul class="tips-list">
+        <li>Pages you've visited before are available offline</li>
+        <li>Your favorites are saved locally and work offline</li>
+        <li>Check your internet connection and try again</li>
+      </ul>
+    </div>
+  </div>
+</div>
+

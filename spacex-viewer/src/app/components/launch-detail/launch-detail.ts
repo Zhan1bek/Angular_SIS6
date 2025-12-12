@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -8,8 +8,8 @@ import { Store } from '@ngrx/store';
 import * as ItemsActions from '../../items/state/items.actions';
 import * as ItemsSelectors from '../../items/state/items.selectors';
 
-import { catchError, switchMap, filter, take } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { catchError, switchMap, filter, take, timeout } from 'rxjs/operators';
+import { forkJoin, of, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-launch-detail',
@@ -18,10 +18,11 @@ import { forkJoin, of } from 'rxjs';
   templateUrl: './launch-detail.html',
   styleUrls: ['./launch-detail.css'],
 })
-export class LaunchDetail {
+export class LaunchDetail implements OnInit, OnDestroy {
   vm: any = null;
   loading = true;
   error = '';
+  isOffline = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,8 +30,27 @@ export class LaunchDetail {
     private location: Location,
     private store: Store
   ) {
+    this.isOffline = !navigator.onLine;
     this.load();
   }
+
+  ngOnInit(): void {
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('online', this.handleOnline);
+    window.removeEventListener('offline', this.handleOffline);
+  }
+
+  private handleOnline = () => {
+    this.isOffline = false;
+  };
+
+  private handleOffline = () => {
+    this.isOffline = true;
+  };
 
   private load() {
     this.route.paramMap
@@ -48,11 +68,20 @@ export class LaunchDetail {
 
           this.store.dispatch(ItemsActions.loadItem({ id }));
 
+          const error$ = this.store.select(ItemsSelectors.selectSelectedItemError);
+          error$.pipe(take(1)).subscribe(err => {
+            if (err) {
+              this.error = err;
+              this.loading = false;
+            }
+          });
+
           return this.store.select(ItemsSelectors.selectSelectedItem).pipe(
             filter((launch: any | null) => !!launch && String(launch.id) === id),
+            timeout(10000),
             take(1),
-            catchError(() => {
-              this.error = 'Failed to load launch';
+            catchError((err) => {
+              this.error = err?.message || 'Failed to load launch';
               this.loading = false;
               return of(null);
             })

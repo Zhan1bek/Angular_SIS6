@@ -1,4 +1,10 @@
 <section class="wrap">
+  @if (isOffline) {
+    <div class="offline-message">
+      You are currently offline. Showing cached data if available.
+    </div>
+  }
+
   @if (loading) {
     <div>Loading...</div>
   }

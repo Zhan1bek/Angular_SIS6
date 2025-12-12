@@ -17,10 +17,6 @@ export class ItemsService {
   getItems(query?: string, page: number = 1, limit: number = 10): Observable<{items: Item[], totalDocs: number, page: number, limit: number}> {
     const term = query?.trim() ?? '';
 
-    if (!navigator.onLine) {
-      return throwError(() => new Error("You are offline. Cached data is not available yet."));
-    }
-
     if (term.length > 0) {
       return this.spacex.searchLaunches(term, false, limit, page).pipe(
         map(res => ({

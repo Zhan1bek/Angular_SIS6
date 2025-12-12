@@ -5,6 +5,7 @@ import { AboutComponent } from './pages/about/about';
 import { LoginComponent } from './pages/login/login';
 import { SignupComponent } from './pages/signup/signup';
 import { ProfileComponent } from './pages/profile/profile';
+import { OfflinePage } from './pages/offline/offline';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'favorites', component: FavoritesPage },
+  { path: 'offline', component: OfflinePage },
   {
     path: 'profile',
     component: ProfileComponent,

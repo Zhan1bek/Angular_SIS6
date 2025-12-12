@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
+import { map, distinctUntilChanged, debounceTime, takeUntil } from 'rxjs/operators';
 import { Item } from '../../services/items/items';
 
 import * as ItemsActions from '../../items/state/items.actions';
@@ -15,11 +15,11 @@ import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-launch-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ItemCardComponent, SearchBar],
+  imports: [CommonModule, ItemCardComponent, SearchBar],
   templateUrl: './launch-list.html',
   styleUrls: ['./launch-list.css'],
 })
-export class LaunchList implements OnInit {
+export class LaunchList implements OnInit, OnDestroy {
   items$!: Observable<Item[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
@@ -28,6 +28,9 @@ export class LaunchList implements OnInit {
   totalPages$!: Observable<number>;
   hasNextPage$!: Observable<boolean>;
   hasPrevPage$!: Observable<boolean>;
+  
+  isOffline = false;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -42,10 +45,17 @@ export class LaunchList implements OnInit {
     this.totalPages$ = this.store.select(ItemsSelectors.selectTotalPages);
     this.hasNextPage$ = this.store.select(ItemsSelectors.selectHasNextPage);
     this.hasPrevPage$ = this.store.select(ItemsSelectors.selectHasPrevPage);
+    
+    this.isOffline = !navigator.onLine;
+    window.addEventListener('online', () => {
+      this.isOffline = false;
+    });
+    window.addEventListener('offline', () => {
+      this.isOffline = true;
+    });
   }
 
   ngOnInit(): void {
-    // Обработка поиска с debounceTime, distinctUntilChanged и switchMap в effects
     this.route.queryParamMap
       .pipe(
         map((params) => ({
@@ -53,7 +63,7 @@ export class LaunchList implements OnInit {
           page: parseInt(params.get('page') || '1', 10),
           limit: parseInt(params.get('limit') || '10', 10),
         })),
-        debounceTime(300), // debounce для поиска
+        debounceTime(300),
         distinctUntilChanged((prev, curr) => 
           prev.query === curr.query && prev.page === curr.page && prev.limit === curr.limit
         )
@@ -94,5 +104,10 @@ export class LaunchList implements OnInit {
 
   trackById(index: number, item: Item): string {
     return item.id;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

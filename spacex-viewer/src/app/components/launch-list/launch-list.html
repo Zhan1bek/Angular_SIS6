@@ -26,6 +26,12 @@
     <div>Loading...</div>
   }
 
+  @if (isOffline) {
+    <div class="offline-message">
+      You are currently offline. Showing cached data if available.
+    </div>
+  }
+
   @if (error$ | async; as err) {
     <div class="error">{{ err }}</div>
   }

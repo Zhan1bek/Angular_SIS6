@@ -4,7 +4,7 @@ import {
   provideZoneChangeDetection, isDevMode,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
@@ -14,13 +14,16 @@ import { routes } from './app.routes';
 import { itemsReducer, ITEMS_FEATURE_KEY } from './items/state/items.reducer';
 import { ItemsEffects } from './items/state/items.effects';
 import { provideServiceWorker } from '@angular/service-worker';
+import { offlineInterceptor } from './interceptors/offline.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([offlineInterceptor])
+    ),
 
     provideStore({
       [ITEMS_FEATURE_KEY]: itemsReducer,
