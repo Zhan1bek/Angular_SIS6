@@ -18,7 +18,7 @@
         [class.active]="favorites.isFavorite(item.id)"
         aria-label="Toggle favorite"
       >
-        {{ favorites.isFavorite(item.id) ? '★' : '☆' }}
+        <span class="star-icon">{{ favorites.isFavorite(item.id) ? '★' : '☆' }}</span>
       </button>
 
       <span
@@ -29,7 +29,7 @@
         {{
           item.success === true
             ? 'Success'
-            : (item.success === false ? 'Failure' : 'Unsuccess')
+            : (item.success === false ? 'Failure' : 'Unknown')
         }}
       </span>
     </div>

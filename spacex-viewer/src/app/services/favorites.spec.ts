@@ -2,21 +2,27 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { FavoritesService } from './favorites';
 import { AuthService } from './auth';
+import { NotificationService } from './notification.service';
 
 describe('FavoritesService', () => {
   let service: FavoritesService;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockNotificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
     mockAuthService = jasmine.createSpyObj('AuthService', [], {
       currentUser$: of(null)
+    });
+    mockNotificationService = jasmine.createSpyObj('NotificationService', ['showNotification'], {
+      isSupportedBrowser: true
     });
 
     localStorage.clear();
 
     TestBed.configureTestingModule({
       providers: [
-        { provide: AuthService, useValue: mockAuthService }
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: NotificationService, useValue: mockNotificationService }
       ]
     });
     service = TestBed.inject(FavoritesService);

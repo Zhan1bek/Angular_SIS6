@@ -1,6 +1,6 @@
 <section class="auth-page">
   <div class="auth-card profile-card">
-    <h2>Profile</h2>
+    <h2>{{ i18n.translate('profile.title') }}</h2>
 
     <div *ngIf="user$ | async as user; else noUser">
 
@@ -40,8 +40,8 @@
       <div class="upload-section">
         <label class="upload-label" for="profile-photo-input" [class.uploading]="uploading">
           <span class="upload-icon">📷</span>
-          <span class="upload-text">Profile Picture</span>
-          <span class="upload-hint">Click to upload (JPG or PNG)</span>
+          <span class="upload-text">{{ i18n.translate('profile.upload') }}</span>
+          <span class="upload-hint">{{ i18n.translate('profile.upload.hint') }}</span>
         </label>
         <input
           type="file"
@@ -53,7 +53,7 @@
         />
         <div class="upload-status" *ngIf="uploading">
           <span class="upload-spinner">⏳</span>
-          <span>Compressing and uploading...</span>
+          <span>{{ i18n.translate('profile.uploading') }}</span>
         </div>
       </div>
 
@@ -65,17 +65,17 @@
 
       <!-- Notifications -->
       <div class="notifications-section" *ngIf="notificationService.isSupportedBrowser">
-        <h3 class="section-title">Notifications</h3>
+        <h3 class="section-title">{{ i18n.translate('profile.notifications.title') }}</h3>
         <div class="notifications-control">
           <div class="notifications-info">
             <span class="notifications-icon">🔔</span>
             <div class="notifications-text">
-              <span class="notifications-label">Receive local notifications about new launches</span>
+              <span class="notifications-label">{{ i18n.translate('profile.notifications.label') }}</span>
               <span class="notifications-status" *ngIf="notificationService.isPermissionGranted">
-                ✓ Enabled
+                {{ i18n.translate('profile.notifications.enabled') }}
               </span>
               <span class="notifications-status denied" *ngIf="notificationService.isPermissionDenied">
-                ✗ Blocked
+                {{ i18n.translate('profile.notifications.blocked') }}
               </span>
             </div>
           </div>
@@ -85,15 +85,15 @@
             (click)="toggleNotifications()"
             [disabled]="notificationService.isPermissionDenied || uploading"
           >
-            <span *ngIf="!notificationService.isPermissionGranted">Enable</span>
-            <span *ngIf="notificationService.isPermissionGranted">Test</span>
+            <span *ngIf="!notificationService.isPermissionGranted">{{ i18n.translate('profile.notifications.enable') }}</span>
+            <span *ngIf="notificationService.isPermissionGranted">{{ i18n.translate('profile.notifications.test') }}</span>
           </button>
         </div>
       </div>
 
       <button type="button" class="logout-btn" (click)="onLogout()" [disabled]="uploading">
         <span class="btn-icon">🚪</span>
-        <span>{{ uploading ? 'Saving...' : 'Logout' }}</span>
+        <span>{{ i18n.translate('profile.logout') }}</span>
       </button>
     </div>
 

@@ -16,18 +16,6 @@
 .offline-icon-large {
   font-size: 80px;
   margin-bottom: 24px;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
 }
 
 .offline-title {
@@ -64,14 +52,11 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-retry:hover:not(:disabled) {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
 .btn-retry:disabled {
@@ -91,27 +76,15 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .btn-back:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
 }
 
 .btn-icon {
   font-size: 1.2rem;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .cache-info {
@@ -166,15 +139,12 @@
   border-radius: 12px;
   color: #f9fafb;
   cursor: pointer;
-  transition: all 0.2s ease;
   position: relative;
 }
 
 .page-card:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
 .page-icon {

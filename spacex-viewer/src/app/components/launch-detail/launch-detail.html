@@ -1,12 +1,12 @@
 <section class="wrap">
   @if (isOffline) {
     <div class="offline-message">
-      You are currently offline. Showing cached data if available.
+      {{ i18n.translate('launches.offline') }}
     </div>
   }
 
   @if (loading) {
-    <div>Loading...</div>
+    <div>{{ i18n.translate('launches.loading') }}</div>
   }
 
   @if (error) {
@@ -15,7 +15,7 @@
 
   @if (vm) {
     <button class="btn-back" type="button" (click)="goBack()">
-      ← Back
+      {{ i18n.translate('detail.back') }}
     </button>
 
     <header class="hdr">
@@ -32,21 +32,21 @@
             [class.is-ok]="vm.success === true"
           >
             @if (vm.success === true) {
-              Success
+              {{ i18n.translate('detail.success') }}
             } @else if (vm.success === false) {
-              Failure
+              {{ i18n.translate('detail.failure') }}
             } @else {
-              Unknown
+              {{ i18n.translate('detail.unknown') }}
             }
           </span>
         </div>
 
         <div class="meta" *ngIf="vm.rocketName">
-          Rocket: {{ vm.rocketName }}
+          {{ i18n.translate('detail.rocket') }} {{ vm.rocketName }}
         </div>
 
         <div class="meta" *ngIf="vm.launchpadName">
-          Launchpad: {{ vm.launchpadName }}
+          {{ i18n.translate('detail.launchpad') }} {{ vm.launchpadName }}
         </div>
       </div>
 
@@ -59,13 +59,13 @@
 
     @if (vm.details) {
       <section class="details">
-        <h3>Details</h3>
+        <h3>{{ i18n.translate('detail.details') }}</h3>
         <p>{{ vm.details }}</p>
       </section>
     }
 
     <section class="links" *ngIf="vm.article || vm.webcast">
-      <h3>Links</h3>
+      <h3>{{ i18n.translate('detail.links') }}</h3>
       <div class="link-buttons">
         <a
           *ngIf="vm.article"
@@ -74,7 +74,7 @@
           rel="noopener"
           class="btn-link"
         >
-          Article
+          {{ i18n.translate('detail.article') }}
         </a>
         <a
           *ngIf="vm.webcast"
@@ -83,7 +83,7 @@
           rel="noopener"
           class="btn-link"
         >
-          Webcast
+          {{ i18n.translate('detail.webcast') }}
         </a>
       </div>
     </section>

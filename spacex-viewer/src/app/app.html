@@ -1,32 +1,52 @@
 <header class="hdr">
-  <nav class="nav">
-    <a
-      routerLink="/"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-    >Home</a
-    >
-    <a routerLink="/about" routerLinkActive="active">About</a>
-    <a routerLink="/items" routerLinkActive="active">Launches</a>
-    <a routerLink="/favorites" routerLinkActive="active">Favorites</a>
-    <span class="spacer"></span>
+  <div class="hdr-inner">
+    <div class="brand">SpaceX Viewer</div>
 
-    <ng-container *ngIf="user$ | async as user; else loggedOut">
-      <a routerLink="/profile" routerLinkActive="active">Profile</a>
-    </ng-container>
+    <nav class="nav">
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >{{ i18n.translate('nav.home') }}</a
+      >
+      <a routerLink="/about" routerLinkActive="active">{{ i18n.translate('nav.about') }}</a>
+      <a routerLink="/items" routerLinkActive="active">{{ i18n.translate('nav.launches') }}</a>
+      <a routerLink="/favorites" routerLinkActive="active">{{ i18n.translate('nav.favorites') }}</a>
 
-    <ng-template #loggedOut>
-      <a routerLink="/login" routerLinkActive="active">Login</a>
-      <a routerLink="/signup" routerLinkActive="active">Sign up</a>
-    </ng-template>
-  </nav>
+      <span class="spacer"></span>
+      <app-language-selector></app-language-selector>
+
+      <ng-container *ngIf="user$ | async as user; else loggedOut">
+        <div class="user-profile-header">
+          <ng-container *ngIf="profile$ | async as profile">
+            <a routerLink="/profile" routerLinkActive="active" class="profile-link">
+              <div class="profile-avatar" *ngIf="profile?.photoData; else avatarPlaceholder">
+                <img [src]="profile.photoData" alt="Profile" class="avatar-img-small" />
+              </div>
+              <ng-template #avatarPlaceholder>
+                <div class="profile-avatar placeholder">
+                  {{ user.email?.charAt(0) | uppercase }}
+                </div>
+              </ng-template>
+              <span class="profile-text">{{ i18n.translate('nav.profile') }}</span>
+            </a>
+          </ng-container>
+        </div>
+      </ng-container>
+
+      <ng-template #loggedOut>
+        <a routerLink="/login" routerLinkActive="active">{{ i18n.translate('nav.login') }}</a>
+        <a routerLink="/signup" routerLinkActive="active">{{ i18n.translate('nav.signup') }}</a>
+      </ng-template>
+    </nav>
+  </div>
 </header>
 
 @if (isOffline) {
   <div class="offline-banner">
     <span class="offline-icon">📡</span>
-    <span class="offline-text">You are currently offline. Some features may be limited.</span>
-    <a routerLink="/offline" class="offline-link">View Offline Page</a>
+    <span class="offline-text">{{ i18n.translate('offline.banner.text') }}</span>
+    <a routerLink="/offline" class="offline-link">{{ i18n.translate('offline.banner.link') }}</a>
   </div>
 }
 

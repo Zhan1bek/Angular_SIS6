@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
@@ -7,6 +7,7 @@ import { SpacexService } from '../../services/spacex';
 import { Store } from '@ngrx/store';
 import * as ItemsActions from '../../items/state/items.actions';
 import * as ItemsSelectors from '../../items/state/items.selectors';
+import { I18nService } from '../../services/i18n.service';
 
 import { catchError, switchMap, filter, take, timeout } from 'rxjs/operators';
 import { forkJoin, of, throwError } from 'rxjs';
@@ -23,6 +24,7 @@ export class LaunchDetail implements OnInit, OnDestroy {
   loading = true;
   error = '';
   isOffline = false;
+  i18n = inject(I18nService);
 
   constructor(
     private route: ActivatedRoute,

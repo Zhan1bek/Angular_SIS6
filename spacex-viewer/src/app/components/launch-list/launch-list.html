@@ -1,15 +1,15 @@
 <section class="wrap">
-  <h2>Latest Launches</h2>
+  <h2>{{ i18n.translate('launches.title') }}</h2>
 
   <app-search-bar
     (queryChange)="onQuery($any($event))"
-    [placeholder]="'Search by launch name...'"
+    [placeholder]="i18n.translate('launches.search')"
   >
   </app-search-bar>
 
   <div class="pagination-controls-top">
     <label>
-      Items per page:
+      {{ i18n.translate('launches.itemsPerPage') }}
       <select 
         [value]="(pageSize$ | async) || 10" 
         (change)="onLimitChange(+$any($event.target).value)"
@@ -23,12 +23,12 @@
   </div>
 
   @if (loading$ | async) {
-    <div>Loading...</div>
+    <div>{{ i18n.translate('launches.loading') }}</div>
   }
 
   @if (isOffline) {
     <div class="offline-message">
-      You are currently offline. Showing cached data if available.
+      {{ i18n.translate('launches.offline') }}
     </div>
   }
 
@@ -41,7 +41,7 @@
       @for (launch of launches; track launch.id) {
         <app-item-card [item]="launch"></app-item-card>
       } @empty {
-        <li class="row">No launches found.</li>
+        <li class="row">{{ i18n.translate('launches.noResults') }}</li>
       }
     </ul>
   }
@@ -55,12 +55,12 @@
             (click)="onPageChange(currentPage - 1)"
             class="pagination-btn"
           >
-            ← Previous
+            {{ i18n.translate('launches.previous') }}
           </button>
         </ng-container>
 
         <span class="pagination-info">
-          Page {{ currentPage }} of {{ totalPages }}
+          {{ i18n.translate('launches.page') }} {{ currentPage }} {{ i18n.translate('launches.of') }} {{ totalPages }}
         </span>
 
         <ng-container *ngIf="hasNextPage$ | async">
@@ -69,7 +69,7 @@
             (click)="onPageChange(currentPage + 1)"
             class="pagination-btn"
           >
-            Next →
+            {{ i18n.translate('launches.next') }}
           </button>
         </ng-container>
       </ng-container>

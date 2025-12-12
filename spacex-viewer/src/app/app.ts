@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { AuthService } from './services/auth';
 import { NotificationService } from './services/notification.service';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { UserProfileService } from './services/user-profile';
+import { I18nService } from './services/i18n.service';
+import { LanguageSelectorComponent } from './components/language-selector/language-selector';
+import { Subject, of } from 'rxjs';
+import { takeUntil, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterModule],
+  imports: [CommonModule, RouterOutlet, RouterModule, LanguageSelectorComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -17,9 +20,17 @@ export class App implements OnInit, OnDestroy {
   private auth = inject(AuthService);
   private router = inject(Router);
   private notificationService = inject(NotificationService);
+  private userProfileService = inject(UserProfileService);
+  public i18n = inject(I18nService);
   private destroy$ = new Subject<void>();
 
   user$ = this.auth.currentUser$;
+  profile$ = this.user$.pipe(
+    switchMap((user) => {
+      if (!user) return of(null);
+      return this.userProfileService.getUserProfile(user.uid);
+    })
+  );
   isOffline = false;
 
   ngOnInit(): void {
@@ -29,6 +40,9 @@ export class App implements OnInit, OnDestroy {
     window.addEventListener('offline', this.handleOffline);
 
     this.setupNotificationClickHandler();
+    
+    // Set initial document language
+    document.documentElement.lang = this.i18n.currentLanguageValue;
   }
 
   private setupNotificationClickHandler(): void {

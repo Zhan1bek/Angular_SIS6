@@ -4,9 +4,9 @@
   top: 0;
   z-index: 100;
   backdrop-filter: blur(12px);
-  background: rgba(0, 0, 0, 0.75);
-  padding: 8px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 10, 25, 0.9);
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .hdr-inner {
@@ -14,18 +14,26 @@
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
 }
 
-.logo {
-  margin: 0;
-  font-size: 28px;
+.brand {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #e5e7eb;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.35), rgba(14, 165, 233, 0.25));
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .nav {
   display: flex;
-  gap: 16px;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  flex-wrap: wrap;
 }
 
 .nav a {
@@ -101,4 +109,62 @@
 
 .offline-link:hover {
   opacity: 0.8;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.profile-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-link.active {
+  background-color: rgba(30, 144, 255, 0.2);
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-avatar.placeholder {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e5e7eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.avatar-img-small {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-text {
+  font-size: 14px;
 }

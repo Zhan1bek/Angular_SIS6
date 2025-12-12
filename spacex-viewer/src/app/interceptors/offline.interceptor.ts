@@ -12,8 +12,14 @@ export const offlineInterceptor: HttpInterceptorFn = (req, next) => {
       if ((!navigator.onLine || error.status === 0) && 
           error.url?.includes('api.spacexdata.com') &&
           !error.url?.includes('favicon.ico')) {
+        // Если это запрос к списку/деталям запусков или избранному — остаёмся на странице,
+        // чтобы показать кэш или ошибку, без редиректа.
+        const isDataFetch = req.url.includes('/launches');
+        const isFavoritesFetch = req.url.includes('/favorites');
         const currentUrl = router.url;
-        if (currentUrl !== '/offline' && !currentUrl.startsWith('/offline')) {
+        const isOfflinePage = currentUrl === '/offline' || currentUrl.startsWith('/offline');
+
+        if (!isDataFetch && !isFavoritesFetch && !isOfflinePage) {
           setTimeout(() => {
             router.navigate(['/offline'], { 
               queryParams: { from: currentUrl },

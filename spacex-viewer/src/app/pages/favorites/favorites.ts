@@ -5,6 +5,7 @@ import { SpacexService } from '../../services/spacex';
 import { Launch } from '../../models/launch';
 import { forkJoin, map, of, switchMap } from 'rxjs';
 import { ItemCardComponent } from '../../components/item-card/item-card';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-favorites',
@@ -16,6 +17,7 @@ import { ItemCardComponent } from '../../components/item-card/item-card';
 export class FavoritesPage {
   private favoritesService = inject(FavoritesService);
   private spacex = inject(SpacexService);
+  i18n = inject(I18nService);
 
   favoritesIds$ = this.favoritesService.favorites$;
   mergeInfo$ = this.favoritesService.mergeInfo$;

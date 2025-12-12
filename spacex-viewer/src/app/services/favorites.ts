@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { AuthService } from './auth';
+import { NotificationService } from './notification.service';
 
 interface UserDoc {
   favorites?: string[];
@@ -24,7 +25,10 @@ export class FavoritesService {
   private currentUserId: string | null = null;
   private mergedForUserId: string | null = null;
 
-  constructor(private auth: AuthService) {
+  constructor(
+    private auth: AuthService,
+    private notificationService: NotificationService
+  ) {
     const local = this.loadFromLocalStorage();
     this.favoritesSubject.next(local);
 
@@ -68,6 +72,16 @@ export class FavoritesService {
       this.saveToFirestore(this.currentUserId, updated).catch((err) => {
         console.warn('[Favorites] Failed to save to Firestore', err);
       });
+    }
+
+    // Notify only on add
+    if (!exists && this.notificationService.isSupportedBrowser) {
+      this.notificationService
+        .showNotification('Added to favorites', {
+          body: `Launch ${id} added to your favorites.`,
+          tag: `fav-${id}`,
+        })
+        .catch(() => {});
     }
   }
 

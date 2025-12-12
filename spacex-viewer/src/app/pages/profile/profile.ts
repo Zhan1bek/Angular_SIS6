@@ -10,6 +10,7 @@ import {
 } from '../../services/user-profile';
 import { ImageCompressionService } from '../../services/image-compression.service';
 import { NotificationService } from '../../services/notification.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +25,7 @@ export class ProfileComponent implements OnDestroy {
   private userProfileService = inject(UserProfileService);
   private imageCompressionService = inject(ImageCompressionService);
   notificationService = inject(NotificationService);
+  i18n = inject(I18nService);
 
   user$ = this.auth.currentUser$;
 

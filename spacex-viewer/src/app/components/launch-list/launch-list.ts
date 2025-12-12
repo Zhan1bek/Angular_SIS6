@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { Item } from '../../services/items/items';
@@ -11,15 +11,16 @@ import { ItemCardComponent } from '../item-card/item-card';
 
 import { SearchBar } from '../search-bar/search-bar';
 import { Store } from '@ngrx/store';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-launch-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, ItemCardComponent, SearchBar],
+  imports: [CommonModule, ItemCardComponent, SearchBar],
   templateUrl: './launch-list.html',
   styleUrls: ['./launch-list.css'],
 })
-export class LaunchList implements OnInit {
+export class LaunchList implements OnInit, OnDestroy {
   items$!: Observable<Item[]>;
   loading$!: Observable<boolean>;
   error$!: Observable<string | null>;
@@ -28,12 +29,16 @@ export class LaunchList implements OnInit {
   totalPages$!: Observable<number>;
   hasNextPage$!: Observable<boolean>;
   hasPrevPage$!: Observable<boolean>;
+  
+  i18n = inject(I18nService);
+  isOffline = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private store: Store
   ) {
+    this.isOffline = !navigator.onLine;
     this.items$ = this.store.select(ItemsSelectors.selectItems);
     this.loading$ = this.store.select(ItemsSelectors.selectItemsLoading);
     this.error$ = this.store.select(ItemsSelectors.selectItemsError);
@@ -45,6 +50,10 @@ export class LaunchList implements OnInit {
   }
 
   ngOnInit(): void {
+    // Setup online/offline listeners
+    window.addEventListener('online', this.handleOnline);
+    window.addEventListener('offline', this.handleOffline);
+
     this.route.queryParamMap
       .pipe(
         map((params) => ({
@@ -65,6 +74,19 @@ export class LaunchList implements OnInit {
         }));
       });
   }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('online', this.handleOnline);
+    window.removeEventListener('offline', this.handleOffline);
+  }
+
+  private handleOnline = () => {
+    this.isOffline = false;
+  };
+
+  private handleOffline = () => {
+    this.isOffline = true;
+  };
 
   onQuery(value: string) {
     // При изменении поиска сбрасываем на первую страницу

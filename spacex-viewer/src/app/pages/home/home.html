@@ -1,15 +1,14 @@
 <section class="home">
   <div class="home-content">
-    <h2>Welcome to SpaceX Viewer</h2>
+    <h2>{{ i18n.translate('home.welcome') }}</h2>
     <p>
-      This app shows the latest SpaceX launches with detailed information loaded
-      from the official public API.
+      {{ i18n.translate('home.description') }}
     </p>
 
     <p>
-      Use the navigation above or click the button below to browse recent launches.
+      {{ i18n.translate('home.navigation') }}
     </p>
 
-    <a routerLink="/items" class="btn-primary">View launches</a>
+    <a routerLink="/items" class="btn-primary">{{ i18n.translate('home.viewLaunches') }}</a>
   </div>
 </section>
